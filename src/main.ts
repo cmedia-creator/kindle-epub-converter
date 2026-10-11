@@ -1,5 +1,6 @@
 import './style.css';
 import { convert, ConvertError, type ConvertResult } from './core/convert';
+import { decideOutcome } from './outcome';
 
 const input = document.getElementById('file') as HTMLInputElement;
 const drop = document.getElementById('drop') as HTMLLabelElement;
@@ -44,7 +45,7 @@ function renderSuccess(r: ConvertResult) {
   );
   if (r.rubyCount) facts.append(h('li', '', `ルビ記法 ${r.rubyCount} 件をルビに変換`));
   if (r.encoding) facts.append(h('li', '', `文字コード ${r.encoding}`));
-  facts.append(h('li', r.verify.ok ? 'good' : 'bad', r.verify.ok ? '原稿との本文照合：一致' : '原稿との本文照合：不一致あり'));
+  facts.append(h('li', 'good', '原稿との本文照合：一致'));
 
   const again = h('p', 'manual');
   const btn = h('button', 'btn', 'ダウンロード');
@@ -65,6 +66,26 @@ function renderSuccess(r: ConvertResult) {
   }
   if (r.headings === 0) box.append(h('p', 'hint', '章分けしたい場合は、章の題名を「第一章」「プロローグ」のように1行で書くか、Wordの「見出し1」スタイルを設定してください。'));
   box.append(h('p', 'hint', 'KDPに登録する前に、Kindle Previewer で表示を確認してください。表紙画像はKDPの登録画面で別途設定します。'));
+  show(box);
+}
+
+/** 本文照合が一致しなかった場合：成功扱いにせず、自動ダウンロードもしない */
+function renderMismatch(r: ConvertResult) {
+  const box = h('div', 'result ng');
+  const title = h('p', 'result-title');
+  title.append(h('span', 'mark', '!'), document.createTextNode('本文の照合で不一致が見つかりました'));
+  box.append(
+    title,
+    h('p', 'result-file', r.fileName),
+    h('p', 'error-msg', '変換後のEPUBの本文が元の原稿と一致しなかったため、ダウンロードを中止しました。このEPUBをそのまま出版に使わないでください。'),
+  );
+  if (r.verify.detail) box.append(h('p', 'hint', r.verify.detail));
+  const manual = h('p', 'manual');
+  const btn = h('button', 'btn-sub', '確認用にダウンロード');
+  btn.type = 'button';
+  btn.addEventListener('click', () => objectUrl && download(objectUrl, r.fileName));
+  manual.append(h('span', '', '不一致の内容を確かめたい場合のみ：'), btn);
+  box.append(manual);
   show(box);
 }
 
@@ -97,8 +118,10 @@ async function handle(file: File) {
     const r = convert(file.name, bytes, DOMParser);
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     objectUrl = URL.createObjectURL(new Blob([r.epub as BlobPart], { type: 'application/epub+zip' }));
-    renderSuccess(r);
-    download(objectUrl, r.fileName);
+    const o = decideOutcome(r);
+    if (o.kind === 'success') renderSuccess(r);
+    else renderMismatch(r);
+    if (o.autoDownload) download(objectUrl, r.fileName);
   } catch (e) {
     console.error(e);
     renderError(e instanceof ConvertError ? e.message : '予期しないエラーが発生しました。ファイルが壊れていないか確認してください。');

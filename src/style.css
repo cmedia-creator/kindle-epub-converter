@@ -125,3 +125,7 @@ code { font-family: inherit; background: var(--accent-soft); padding: 0 4px; bor
 .foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8rem; }
 .foot p { margin: 0 0 6px; }
 .foot a { color: var(--accent); }
+.btn-sub {
+  font: inherit; font-size: 0.85rem; color: var(--text); background: transparent;
+  border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px; cursor: pointer;
+}

@@ -22,5 +22,5 @@ export default defineConfig({
   base: './',
   plugins: [csp],
   build: { target: 'es2020', modulePreload: { polyfill: false } },
-  test: { include: ['tests/**/*.test.ts'], testTimeout: 60000 },
+  test: { include: ['tests/*.test.ts'], testTimeout: 60000 },
 });

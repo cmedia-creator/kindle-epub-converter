@@ -3,7 +3,8 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { DOMParser } from '@xmldom/xmldom';
 import { unzipSync, strFromU8 } from 'fflate';
 import { convert, ConvertError, type ConvertResult } from '../src/core/convert';
-import { extractLines } from '../src/core/verify';
+import { extractLines, verifyTxt, verifyDocx } from '../src/core/verify';
+import { decideOutcome } from '../src/outcome';
 import type { DomParserCtor } from '../src/core/docx';
 
 const Parser = DOMParser as unknown as DomParserCtor;
@@ -221,5 +222,36 @@ describe('異常系：分かりやすいエラーで止まる', () => {
   it.each(cases)('%s', (f, msg) => {
     expect(() => run(f)).toThrow(ConvertError);
     expect(() => run(f)).toThrow(msg);
+  });
+});
+
+describe('本文照合が不一致を検出し、不一致なら自動ダウンロードしない', () => {
+  // 生成済み XHTML を改変して、照合が失敗することを確かめる
+  const tamper = (r: ConvertResult, f: (x: string) => string) =>
+    r.contentDocs.map((d, i) => {
+      if (i !== r.contentDocs.length - 1) return d;
+      const x = f(d.xhtml);
+      expect(x).not.toBe(d.xhtml); // 改変が実際に効いていること
+      return { xhtml: x };
+    });
+  const cases: [string, (x: string) => string][] = [
+    ['段落の欠落', (x) => x.replace(/<p>(?!<br\/>).*?<\/p>\n/, '')],
+    ['段落の重複', (x) => x.replace(/(<p>(?!<br\/>).*?<\/p>\n)/, '$1$1')],
+    ['1 文字の改変', (x) => x.replace(/。/, '、')],
+    ['空行の欠落', (x) => x.replace('<p><br/></p>\n', '')],
+  ];
+  it.each(cases)('TXT：%s', (_, f) => {
+    const r = results.get('02-multi-chapter.txt')!;
+    expect(verifyTxt(read('02-multi-chapter.txt'), r.contentDocs, Parser).ok).toBe(true);
+    const v = verifyTxt(read('02-multi-chapter.txt'), tamper(r, f), Parser);
+    expect(v.ok).toBe(false);
+    expect(decideOutcome({ verify: v })).toEqual({ kind: 'mismatch', autoDownload: false });
+  });
+  it.each(cases.slice(0, 3))('DOCX：%s', (_, f) => {
+    const r = results.get('08-chapters-plain.docx')!;
+    expect(verifyDocx(read('08-chapters-plain.docx'), tamper(r, f), Parser).ok).toBe(false);
+  });
+  it('一致した場合のみ成功扱い・自動ダウンロード', () => {
+    for (const r of results.values()) expect(decideOutcome(r)).toEqual({ kind: 'success', autoDownload: true });
   });
 });
