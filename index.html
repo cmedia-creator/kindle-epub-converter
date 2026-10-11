@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>縦書きEPUBメーカー｜原稿を入れるだけでKindle出版用EPUBに変換</title>
+    <meta name="description" content="Word（.docx）やテキスト（.txt）の小説原稿を、日本語縦書きのEPUB3ファイルに変換する無料ツール。登録不要。原稿はサーバーに送信されず、ブラウザ内で変換します。" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23234e8c'/%3E%3Cpath d='M18 6v20M12 9v14' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="./assets/index-qZqE2_pT.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-g0AfHCa0.css">
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="head">
+        <h1 class="name">縦書きEPUBメーカー</h1>
+        <p class="lead">原稿を入れるだけで、Kindle出版用EPUBに変換</p>
+      </header>
+
+      <label class="drop" id="drop" for="file">
+        <input id="file" type="file" accept=".docx,.txt,.md,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+        <svg class="drop-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M14 6h14l10 10v26H14z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M28 6v10h10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M26 24v12M21 31l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="drop-main"><span class="pc">原稿ファイルをここにドロップ<br />または クリックして選択</span><span class="sp">タップして原稿ファイルを選択</span></span>
+        <span class="drop-sub">Word（.docx）・テキスト（.txt）</span>
+      </label>
+
+      <section class="status" id="status" aria-live="polite" hidden></section>
+
+      <section class="info">
+        <ul class="points">
+          <li><strong>原稿はどこにも送信されません。</strong>変換はすべてお使いのブラウザの中で行います。</li>
+          <li>縦書き・右開きのEPUB3（リフロー型）を作成し、ダウンロードします。登録・設定は不要です。</li>
+          <li>「第一章」「プロローグ」などの章見出しや、Wordの見出しスタイルから目次を作ります。</li>
+          <li>Wordのルビ・傍点・太字と、<code>｜漢字《かんじ》</code> 形式のルビに対応します。本文の文章は一切書き換えません。</li>
+          <li>KDPへ登録する前に、Amazon公式の Kindle Previewer で表示を確認することをおすすめします。</li>
+        </ul>
+      </section>
+
+      <footer class="foot">
+        <p>無料・登録不要・広告なし。個人が開発した非公式ツールで、Amazon.com, Inc. およびその関連会社とは関係ありません。Kindle は Amazon.com, Inc. またはその関連会社の商標です。</p>
+        <p><a href="https://github.com/cmedia-creator/kindle-epub-converter" rel="noopener">ソースコード（GitHub）</a></p>
+      </footer>
+    </main>
+  </body>
+</html>
