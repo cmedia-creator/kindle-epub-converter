@@ -1,0 +1,28 @@
+{
+  "name": "kindle-epub-converter",
+  "version": "1.0.0",
+  "description": "日本語小説の原稿（DOCX/TXT）をブラウザ内で縦書きEPUB3に変換するツール",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p . && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "fixtures": "node scripts/make-fixtures.mjs",
+    "epubcheck": "node scripts/epubcheck.mjs",
+    "deploy": "npm run build && node scripts/deploy.mjs"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@xmldom/xmldom": "^0.9.12",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
+  },
+  "private": true
+}
