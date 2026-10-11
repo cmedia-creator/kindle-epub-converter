@@ -53,7 +53,13 @@ function renderSuccess(r: ConvertResult) {
   btn.addEventListener('click', () => objectUrl && download(objectUrl, r.fileName));
   again.append(h('span', '', 'ダウンロードが始まらない場合は'), btn);
 
-  box.append(title, file, facts, again);
+  box.append(
+    title,
+    file,
+    facts,
+    again,
+    h('p', 'hint', '続けて複数の原稿を変換すると、ブラウザが「複数ファイルのダウンロード」をブロックすることがあります。その場合は、アドレスバーに出る表示からダウンロードを許可してください。'),
+  );
 
   const notes = r.warnings.filter((w) => !w.startsWith('章見出しが見つからなかった'));
   if (notes.length) {
